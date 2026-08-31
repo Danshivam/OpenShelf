@@ -5,11 +5,11 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from flask import Flask, jsonify, request, send_from_directory
 
-from goodneighbor import config
-from goodneighbor.db import get_conn, rows_to_dicts, init_db
-from goodneighbor.escalation import list_pending_escalations, resolve_escalation
-from goodneighbor.digest import build_digest
-from goodneighbor.deterministic_cycles import CYCLE_FUNCS
+from openshelf import config
+from openshelf.db import get_conn, rows_to_dicts, init_db
+from openshelf.escalation import list_pending_escalations, resolve_escalation
+from openshelf.digest import build_digest
+from openshelf.deterministic_cycles import CYCLE_FUNCS
 
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 app = Flask(__name__, static_folder=STATIC_DIR, static_url_path="")
@@ -78,25 +78,25 @@ def api_activity():
 
 @app.get("/api/shifts")
 def api_shifts():
-    from goodneighbor.tools.volunteer_tools import get_shift_coverage
+    from openshelf.tools.volunteer_tools import get_shift_coverage
     return jsonify(get_shift_coverage())
 
 
 @app.get("/api/inventory")
 def api_inventory():
-    from goodneighbor.tools.inventory_tools import get_inventory_status
+    from openshelf.tools.inventory_tools import get_inventory_status
     return jsonify(get_inventory_status())
 
 
 @app.get("/api/donations")
 def api_donations():
-    from goodneighbor.tools.donation_tools import list_open_donation_offers
+    from openshelf.tools.donation_tools import list_open_donation_offers
     return jsonify(list_open_donation_offers())
 
 
 @app.get("/api/partners")
 def api_partners():
-    from goodneighbor.tools.donation_tools import get_partner_orgs
+    from openshelf.tools.donation_tools import get_partner_orgs
     return jsonify(get_partner_orgs())
 
 
@@ -121,7 +121,7 @@ def api_run_cycle(cycle):
         return jsonify({"error": f"Unknown cycle '{cycle}'"}), 400
 
     try:
-        from goodneighbor.orchestrator import run_cycle
+        from openshelf.orchestrator import run_cycle
         summary = run_cycle(cycle)
         return jsonify({"engine": "llm-agent", "cycle": cycle, "summary": summary})
     except Exception as exc:  # no Bedrock creds, no model access, network error, etc.
@@ -136,8 +136,8 @@ def api_run_cycle(cycle):
 
 @app.post("/api/reset-demo")
 def api_reset_demo():
-    from goodneighbor.db import reset_db
-    from goodneighbor.seed_data import seed
+    from openshelf.db import reset_db
+    from openshelf.seed_data import seed
     reset_db()
     seed()
     return jsonify({"status": "reset"})
