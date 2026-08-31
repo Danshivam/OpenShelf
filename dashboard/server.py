@@ -1,17 +1,3 @@
-"""
-Good Neighbor Agent — dashboard backend.
-
-A thin Flask API over the exact same modules the agent itself uses
-(goodneighbor.db / escalation / digest / tools). There is no separate
-"dashboard data model" — resolving an escalation here is the same action
-the agent's own tools would see on its next cycle, and the activity feed
-is the literal activity_log table the agent writes to.
-
-Run:
-    python dashboard/server.py
-Then open http://localhost:5050
-"""
-
 import os
 import sys
 
@@ -113,10 +99,6 @@ def api_partners():
     from goodneighbor.tools.donation_tools import get_partner_orgs
     return jsonify(get_partner_orgs())
 
-
-# ---------------------------------------------------------------------------
-# Write / action endpoints
-# ---------------------------------------------------------------------------
 
 @app.post("/api/escalations/<int:escalation_id>/resolve")
 def api_resolve(escalation_id):

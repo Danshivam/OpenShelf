@@ -1,9 +1,3 @@
-"""
-Builds the Good Neighbor Agent: a single strands.Agent carrying the org's
-autonomy policy in its system prompt and a fixed toolset over the org's
-operational datastore.
-"""
-
 from strands import Agent
 from strands.models import BedrockModel
 

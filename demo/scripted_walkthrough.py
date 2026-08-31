@@ -1,17 +1,3 @@
-"""
-Runs the exact tool logic the agent would use, in the sequence a correctly
-policy-following agent would call it, directly (no LLM / no AWS
-credentials required). This proves the mechanics — DB state, matching
-logic, escalation creation — actually work, independent of whether a judge
-has Bedrock access to run the live LLM loop.
-
-The *decisions* about which tool to call and when are the LLM's job in the
-real deployment (see goodneighbor/agent.py's system prompt). The shared
-policy path exercised here lives in goodneighbor/deterministic_cycles.py so
-the dashboard's "run cycle" buttons can use the exact same, already-proven
-logic when no Bedrock credentials are configured.
-"""
-
 import os
 import sys
 
