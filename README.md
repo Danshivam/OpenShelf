@@ -1,4 +1,4 @@
-# Good Neighbor Agent
+# Open Shelf
 
 **Track:** Good Neighbor Agents — agents that help *groups* of people (neighborhoods, nonprofits, food banks, schools, libraries, small local orgs).
 **Built with:** [Strands Agents SDK](https://strandsagents.com) · **Deployed on:** Amazon Bedrock AgentCore Runtime
@@ -15,11 +15,11 @@ None of this needs a new dashboard. Coordinators don't want *another app to chec
 
 ## What this is
 
-A single autonomous agent — **the Good Neighbor Agent** — that runs on a schedule in the background for a community org (demo scenario: **Riverside Community Food Bank**), watching three things:
+A single autonomous agent — **OpenShelf** — that runs on a schedule in the background for a community org (demo scenario: **Riverside Community Food Bank**), watching three things:
 
 | Cycle | What it checks | What it does on its own | What it escalates |
 |---|---|---|---|
-| **Volunteer coverage** | Shifts in the next N days vs. confirmed headcount | Recruits from the backup volunteer pool and auto-confirms fills | A shift stays uncovered past the safe window, or no backups exist |
+| **Volunteer coverage** | Shifts in the next N days vs. confirmed headcount | Recruits from the backup volunteer pool and auto-confirms fills | A shift stays uncovered past the safe window, or no backups exist |S
 | **Inventory & expiry** | Stock levels vs. thresholds, expiry dates | Logs low-stock items for reorder, routes near-expiry perishables to a partner org with capacity | Large-value shortfall, no safe recipient found, or a food-safety flag |
 | **Donation intake** | New donation offers vs. partner org need/capacity | Auto-confirms a clean match (one clear best recipient with capacity) | Competing high-need recipients, unusual/large donations, allergen or condition concerns |
 
@@ -34,7 +34,7 @@ The agent is not a thin prompt wrapper. It is a single `strands.Agent` given rea
 ## Project layout
 
 ```
-src/goodneighbor/
+src/openshelf/
   config.py            # thresholds & policy constants (the "autonomy contract")
   db.py                # SQLite schema + helpers, activity logging
   seed_data.py          # realistic one-week demo scenario for Riverside Community Food Bank
