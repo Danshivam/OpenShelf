@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Good Neighbor Agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="masthead-main">
+      <p class="kicker">Good Neighbor Agent</p>
+      <h1 id="org-name">Riverside Community Food Bank</h1>
+      <p class="masthead-sub" id="status-line">Checking in…</p>
+    </div>
+    <div class="masthead-actions">
+      <button class="btn btn-quiet" id="btn-refresh" title="Reload latest data">Refresh</button>
+      <button class="btn btn-quiet" id="btn-reset" title="Reset the demo dataset">Reset demo data</button>
+    </div>
+  </header>
+
+  <section class="stat-row" id="stat-row" aria-label="This week at a glance">
+    <div class="stat-tile">
+      <span class="stat-number" id="stat-pending">–</span>
+      <span class="stat-label">waiting on you</span>
+    </div>
+    <div class="stat-tile">
+      <span class="stat-number" id="stat-autonomous">–</span>
+      <span class="stat-label">handled without you</span>
+    </div>
+    <div class="stat-tile">
+      <span class="stat-number" id="stat-volunteers">–</span>
+      <span class="stat-label">active volunteers</span>
+    </div>
+    <div class="stat-tile">
+      <span class="stat-number" id="stat-shifts">–</span>
+      <span class="stat-label">shifts this week</span>
+    </div>
+    <div class="stat-tile">
+      <span class="stat-number" id="stat-offers">–</span>
+      <span class="stat-label">open donation offers</span>
+    </div>
+  </section>
+
+  <main class="grid">
+
+    <section class="col-main">
+      <div class="section-head">
+        <h2>Needs your call</h2>
+        <span class="section-note">Each one is a decision, not a task — pick an option and move on.</span>
+      </div>
+      <div id="escalation-list" class="escalation-list">
+        <p class="loading">Loading…</p>
+      </div>
+    </section>
+
+    <aside class="col-side">
+      <div class="section-head">
+        <h2>Handled quietly</h2>
+        <span class="section-note">Last 7 days</span>
+      </div>
+      <ul class="tally-list" id="tally-list">
+        <li class="loading">Loading…</li>
+      </ul>
+
+      <div class="section-head section-head-tight">
+        <h2>Activity</h2>
+      </div>
+      <ul class="activity-feed" id="activity-feed">
+        <li class="loading">Loading…</li>
+      </ul>
+    </aside>
+
+  </main>
+
+  <section class="cycles-panel">
+    <div class="section-head">
+      <h2>Run a cycle now</h2>
+      <span class="section-note">For this demo — in production these run on a schedule via Bedrock AgentCore, unattended.</span>
+    </div>
+    <div class="cycles-buttons">
+      <button class="btn btn-cycle" data-cycle="volunteers">Volunteer coverage</button>
+      <button class="btn btn-cycle" data-cycle="inventory">Inventory &amp; expiry</button>
+      <button class="btn btn-cycle" data-cycle="donations">Donation intake</button>
+    </div>
+    <div id="cycle-output" class="cycle-output" hidden></div>
+  </section>
+
+  <footer class="foot">
+    <p>Built with the Strands Agents SDK · deployed on Amazon Bedrock AgentCore Runtime.</p>
+  </footer>
+
+</div>
+
+<template id="escalation-card-template">
+  <article class="escalation-card">
+    <div class="escalation-bar"></div>
+    <div class="escalation-body">
+      <div class="escalation-meta">
+        <span class="urgency-dot"></span>
+        <span class="urgency-label"></span>
+        <span class="escalation-id"></span>
+      </div>
+      <h3 class="escalation-title"></h3>
+      <p class="escalation-desc"></p>
+      <div class="escalation-options"></div>
+      <form class="escalation-custom">
+        <input type="text" placeholder="Or write your own resolution…" />
+        <button type="submit">Send</button>
+      </form>
+    </div>
+  </article>
+</template>
+
+<script src="app.js"></script>
+</body>
+</html>
