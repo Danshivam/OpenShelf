@@ -17,7 +17,8 @@ DB_PATH = os.environ.get("GNA_DB_PATH", os.path.join(os.path.dirname(__file__), 
 # --- Model ----------------------------------------------------------------
 
 # Any Bedrock-hosted model id the deploying org has access to.
-BEDROCK_MODEL_ID = os.environ.get("GNA_MODEL_ID", "anthropic.claude-sonnet-4-5-20250929-v1:0")
+MODEL_PROVIDER = os.environ.get("GNA_MODEL_PROVIDER", "bedrock-mantle")  # "bedrock" | "bedrock-mantle"
+BEDROCK_MODEL_ID = os.environ.get("GNA_MODEL_ID", "google.gemma-4-31b")
 BEDROCK_REGION = os.environ.get("AWS_REGION", "us-east-1")
 
 # --- Autonomy policy: volunteer coverage ----------------------------------

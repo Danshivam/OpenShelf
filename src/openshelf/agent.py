@@ -65,7 +65,31 @@ General rules:
 """
 
 
+def _build_model():
+    """Construct the model backend based on GNA_MODEL_PROVIDER.
+
+    'bedrock'         -> standard Bedrock Runtime Converse API
+                         (Claude, Llama 3.x/4, Mistral, Cohere, Gemma 3, ...)
+    'bedrock-mantle'   -> Gemma 4 family, served only via Bedrock's separate
+                         OpenAI-compatible "mantle" endpoint. Auth still uses
+                         your normal AWS credentials; Strands derives a
+                         bearer token from them automatically.
+    """
+    if config.MODEL_PROVIDER == "bedrock-mantle":
+        from strands.models.openai import OpenAIModel
+        from strands.models._openai_bedrock import BedrockMantleConfig
+
+        return OpenAIModel(
+            model_id=config.BEDROCK_MODEL_ID,
+            bedrock_mantle_config=BedrockMantleConfig(region=config.BEDROCK_REGION),
+        )
+
+    from strands.models import BedrockModel
+
+    return BedrockModel(model_id=config.BEDROCK_MODEL_ID, region_name=config.BEDROCK_REGION)
+
+
 def build_agent() -> Agent:
     """Construct the Good Neighbor Agent with its tools and policy prompt."""
-    model = BedrockModel(model_id=config.BEDROCK_MODEL_ID, region_name=config.BEDROCK_REGION)
+    model = _build_model()
     return Agent(model=model, system_prompt=SYSTEM_PROMPT, tools=ALL_TOOLS)

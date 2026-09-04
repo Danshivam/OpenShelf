@@ -3,13 +3,13 @@ Command-line interface for local development and demoing the Good
 Neighbor Agent.
 
 Usage:
-    python -m goodneighbor.cli init-db
-    python -m goodneighbor.cli seed
-    python -m goodneighbor.cli run-cycle {volunteers|inventory|donations|all}
-    python -m goodneighbor.cli show-escalations
-    python -m goodneighbor.cli resolve-escalation <id> "<resolution text>"
-    python -m goodneighbor.cli digest [--html]
-    python -m goodneighbor.cli serve
+    python -m openshelf.cli init-db
+    python -m openshelf.cli seed
+    python -m openshelf.cli run-cycle {volunteers|inventory|donations|all}
+    python -m openshelf.cli show-escalations
+    python -m openshelf.cli resolve-escalation <id> "<resolution text>"
+    python -m openshelf.cli digest [--html]
+    python -m openshelf.cli serve
 """
 
 import argparse
