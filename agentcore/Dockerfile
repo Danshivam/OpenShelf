@@ -10,7 +10,7 @@ COPY src/ ./src/
 COPY agentcore/ ./agentcore/
 
 ENV PYTHONUNBUFFERED=1
-ENV GNA_DB_PATH=/app/goodneighbor.db
+ENV OPENSHELF_DB_PATH=/app/openshelf.db
 
 EXPOSE 8080
 

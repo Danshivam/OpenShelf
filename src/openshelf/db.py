@@ -1,5 +1,5 @@
 """
-SQLite datastore for the Good Neighbor Agent.
+SQLite datastore for OpenShelf.
 
 Deliberately plain stdlib sqlite3 — this is a single small org's operational
 data, not a system that needs a managed database. Swap for RDS/Aurora behind
@@ -87,6 +87,10 @@ CREATE TABLE IF NOT EXISTS escalations (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     created_at TEXT DEFAULT (datetime('now')),
     category TEXT NOT NULL,          -- coverage | inventory | donation
+    reference_key TEXT,              -- stable id for the underlying situation
+                                      -- (e.g. "shift-3", "donation-offer-2",
+                                      -- "inventory-Whole milk") used to avoid
+                                      -- re-escalating the same thing every cycle
     title TEXT NOT NULL,
     description TEXT NOT NULL,
     options_json TEXT,               -- JSON list of {"label": ..., "detail": ...}

@@ -1,5 +1,5 @@
 """
-Bedrock AgentCore Runtime entrypoint for the Good Neighbor Agent.
+Bedrock AgentCore Runtime entrypoint for OpenShelf.
 
 This is the ONLY thing AWS invokes. There is no chat UI behind it — its
 callers are:
@@ -23,11 +23,11 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from bedrock_agentcore import BedrockAgentCoreApp  # noqa: E402
 
-from goodneighbor.orchestrator import run_cycle, run_all_cycles  # noqa: E402
-from goodneighbor.escalation import resolve_escalation, list_pending_escalations  # noqa: E402
-from goodneighbor.digest import build_digest, render_markdown  # noqa: E402
-from goodneighbor.agent import build_agent  # noqa: E402
-from goodneighbor.db import init_db  # noqa: E402
+from openshelf.orchestrator import run_cycle, run_all_cycles  # noqa: E402
+from openshelf.escalation import resolve_escalation, list_pending_escalations  # noqa: E402
+from openshelf.digest import build_digest, render_markdown  # noqa: E402
+from openshelf.agent import build_agent  # noqa: E402
+from openshelf.db import init_db  # noqa: E402
 
 app = BedrockAgentCoreApp()
 

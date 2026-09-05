@@ -40,7 +40,7 @@ def build_digest(period_days: int = 7) -> dict:
 
 def render_markdown(digest: dict) -> str:
     lines = [
-        f"# Good Neighbor Agent — Weekly Digest",
+        f"# OpenShelf — Weekly Digest",
         f"**{digest['org_name']}** · last {digest['period_days']} days · generated {digest['generated_at']} UTC",
         "",
         f"Handled **{digest['total_autonomous_actions']}** things on its own this week. "
@@ -87,7 +87,7 @@ def render_html(digest: dict) -> str:
     ) or "<p>Nothing to report — a quiet week.</p>"
 
     return f"""<!doctype html>
-<html><head><meta charset="utf-8"><title>Good Neighbor Agent Digest</title>
+<html><head><meta charset="utf-8"><title>OpenShelf Digest</title>
 <style>
 body {{ font-family: -apple-system, Segoe UI, sans-serif; max-width: 640px; margin: 40px auto; color: #1a1a1a; }}
 h1 {{ font-size: 1.3rem; }} h2 {{ font-size: 1.05rem; margin-top: 2rem; border-bottom: 1px solid #eee; padding-bottom: .3rem;}}
@@ -95,7 +95,7 @@ h1 {{ font-size: 1.3rem; }} h2 {{ font-size: 1.05rem; margin-top: 2rem; border-b
 li {{ margin-bottom: .6rem; }}
 </style></head>
 <body>
-<h1>Good Neighbor Agent — Weekly Digest</h1>
+<h1>OpenShelf — Weekly Digest</h1>
 <p><strong>{digest['org_name']}</strong> · last {digest['period_days']} days</p>
 <div class="summary">Handled <strong>{digest['total_autonomous_actions']}</strong> things on its own this week.
 You have <strong>{len(digest['pending_escalations'])}</strong> decision(s) waiting.</div>

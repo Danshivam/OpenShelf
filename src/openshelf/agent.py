@@ -1,11 +1,16 @@
+"""
+Builds OpenShelf: a single strands.Agent carrying the org's
+autonomy policy in its system prompt and a fixed toolset over the org's
+operational datastore.
+"""
+
 from strands import Agent
-from strands.models import BedrockModel
 
 from . import config
 from .tools import ALL_TOOLS
 
 SYSTEM_PROMPT = f"""\
-You are the Good Neighbor Agent for {config.ORG_NAME}, a small community
+You are OpenShelf, the autonomous operations agent for {config.ORG_NAME}, a small community
 organization. You run in the background, unattended, on a schedule. Nobody
 is watching this conversation live. Your job is to keep three things
 healthy — volunteer shift coverage, inventory/expiry, and donation intake —
@@ -52,7 +57,11 @@ General rules:
 - escalate_to_human is the ONLY way to surface a decision. When you escalate,
   give a specific title, brief context, and 2-3 concrete options a
   coordinator could pick from in ten seconds. Never escalate vague situations
-  ("something might be wrong") — investigate with your tools first.
+  ("something might be wrong") — investigate with your tools first. Always
+  pass a stable reference_key derived from the underlying id/name (e.g.
+  "shift-3", "donation-offer-2", "inventory-Whole milk") — this is how the
+  tool recognizes you're looking at something already pending and avoids
+  paging the coordinator again for the same unresolved problem every cycle.
 - Use notify_coordinator for things worth knowing but not deciding (routine
   autonomous actions worth a mention). Most of your work should never reach
   a human at all — it should just get done and get logged.
@@ -66,7 +75,7 @@ General rules:
 
 
 def _build_model():
-    """Construct the model backend based on GNA_MODEL_PROVIDER.
+    """Construct the model backend based on OPENSHELF_MODEL_PROVIDER.
 
     'bedrock'         -> standard Bedrock Runtime Converse API
                          (Claude, Llama 3.x/4, Mistral, Cohere, Gemma 3, ...)
@@ -90,6 +99,6 @@ def _build_model():
 
 
 def build_agent() -> Agent:
-    """Construct the Good Neighbor Agent with its tools and policy prompt."""
+    """Construct OpenShelf with its tools and policy prompt."""
     model = _build_model()
     return Agent(model=model, system_prompt=SYSTEM_PROMPT, tools=ALL_TOOLS)

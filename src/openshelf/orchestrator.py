@@ -64,7 +64,7 @@ def run_scheduler_loop(poll_seconds: int = 60) -> None:
     cycle instead of keeping a process alive (see agentcore/deploy.md)."""
     agent = build_agent()
     last_run = {cycle: 0.0 for cycle in CYCLE_PROMPTS}
-    print(f"[{datetime.utcnow().isoformat()}] Good Neighbor Agent scheduler starting.")
+    print(f"[{datetime.utcnow().isoformat()}] OpenShelf scheduler starting.")
     while True:
         now = time.time()
         for cycle, interval in CYCLE_INTERVAL_SECONDS.items():

@@ -1,4 +1,4 @@
-/* Good Neighbor Agent — dashboard frontend.
+/* OpenShelf — dashboard frontend.
    Vanilla JS, no build step: fetches from the Flask API in server.py,
    which reads/writes the same tables the agent's own tools use. */
 
@@ -34,7 +34,7 @@ function humanizeAction(action) {
 async function loadStatus() {
   const status = await api("/api/status");
   $("#org-name").textContent = status.org_name;
-  document.title = `Good Neighbor Agent — ${status.org_name}`;
+  document.title = `OpenShelf — ${status.org_name}`;
 
   const pending = status.pending_count;
   $("#status-line").textContent = pending === 0

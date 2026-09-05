@@ -6,7 +6,7 @@ client — only scheduled triggers and escalation replies.
 ## 0. Prerequisites
 
 - AWS account with Bedrock model access enabled for the model in
-  `GNA_MODEL_ID` (default: an Anthropic Claude model on Bedrock).
+  `OPENSHELF_MODEL_ID` (default: an Anthropic Claude model on Bedrock).
 - Python 3.10+, Docker (or Finch/Podman), boto3, AWS credentials configured.
 - `pip install bedrock-agentcore-starter-toolkit` for the fastest path
   (`agentcore configure` / `agentcore launch`), or build the container
@@ -20,8 +20,8 @@ and, for a real deployment, real org data loaded instead of `seed_data.py`'s
 demo scenario:
 
 ```bash
-python -m goodneighbor.cli init-db
-python -m goodneighbor.cli seed   # demo only — replace with real data loading
+python -m openshelf.cli init-db
+python -m openshelf.cli seed   # demo only — replace with real data loading
 ```
 
 For production, either bake a persisted volume/EFS mount into the container
@@ -34,7 +34,7 @@ the `get_conn()` context manager, so this is a one-file change.
 ```bash
 export AWS_ACCOUNT_ID=<account-id>
 export AWS_REGION=us-east-1
-export ECR_REPO=goodneighbor-agent
+export ECR_REPO=openshelf-agent
 
 aws ecr create-repository --repository-name $ECR_REPO --region $AWS_REGION
 aws ecr get-login-password --region $AWS_REGION \
@@ -51,7 +51,7 @@ Using the starter toolkit (recommended for a first deployment):
 
 ```bash
 pip install bedrock-agentcore-starter-toolkit
-agentcore configure --entrypoint agentcore/app.py --name goodneighbor-agent
+agentcore configure --entrypoint agentcore/app.py --name openshelf-agent
 agentcore launch
 ```
 
@@ -70,14 +70,14 @@ via `InvokeAgentRuntime` with a fixed payload:
 
 | Rule | Cadence | Payload |
 |---|---|---|
-| `goodneighbor-volunteers` | every 4 hours | `{"mode": "cycle", "cycle": "volunteers"}` |
-| `goodneighbor-inventory` | daily, 6am local | `{"mode": "cycle", "cycle": "inventory"}` |
-| `goodneighbor-donations` | every 30 min | `{"mode": "cycle", "cycle": "donations"}` |
-| `goodneighbor-digest` | weekly, Monday 8am | `{"mode": "digest"}` |
+| `openshelf-volunteers` | every 4 hours | `{"mode": "cycle", "cycle": "volunteers"}` |
+| `openshelf-inventory` | daily, 6am local | `{"mode": "cycle", "cycle": "inventory"}` |
+| `openshelf-donations` | every 30 min | `{"mode": "cycle", "cycle": "donations"}` |
+| `openshelf-digest` | weekly, Monday 8am | `{"mode": "digest"}` |
 
 ```bash
 aws scheduler create-schedule \
-  --name goodneighbor-volunteers \
+  --name openshelf-volunteers \
   --schedule-expression "rate(4 hours)" \
   --target "Arn=<agentRuntimeArn>,RoleArn=<scheduler-invoke-role>,Input='{\"mode\":\"cycle\",\"cycle\":\"volunteers\"}'" \
   --flexible-time-window "Mode=OFF"
@@ -93,7 +93,7 @@ during a cycle invocation. To actually reach a coordinator's phone:
 - Add a small Lambda triggered by the cycle's response (or poll
   `{"mode": "list_escalations"}` on a short EventBridge schedule) that
   formats each new pending escalation with
-  `goodneighbor.escalation.format_escalation_for_sms` and publishes it to an
+  `openshelf.escalation.format_escalation_for_sms` and publishes it to an
   SNS topic (SMS) or a Slack incoming webhook.
 - A coordinator's reply ("2") maps back to `{"mode": "resolve_escalation",
   "escalation_id": <id>, "resolution": "Option 2: ..."}` invoked against the

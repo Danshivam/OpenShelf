@@ -9,7 +9,7 @@ They exist for two reasons:
    credentials or Bedrock access (see demo/scripted_walkthrough.py).
 2. The dashboard can offer a "run cycle now" button that works out of the
    box; if Bedrock credentials ARE configured, the dashboard prefers
-   invoking the real agent (goodneighbor.orchestrator.run_cycle) and only
+   invoking the real agent (openshelf.orchestrator.run_cycle) and only
    falls back to this deterministic path otherwise — see dashboard/server.py.
 
 In production (AgentCore), the real LLM-driven agent is what runs on the
@@ -78,6 +78,7 @@ def run_volunteer_cycle() -> list:
                     f"{attempt_note} Coverage is still short {remaining_gap}."
                 ),
                 category="coverage",
+                reference_key=f"shift-{shift['id']}",
                 options=[
                     "Approve overtime pay to recruit an outside volunteer",
                     "Reduce scope of the shift to what current staffing can handle",
@@ -119,6 +120,7 @@ def run_inventory_cycle() -> list:
                     f"${AUTONOMOUS_ROUTING_VALUE_CEILING_USD} autonomous ceiling."
                 ),
                 category="inventory",
+                reference_key=f"inventory-{item['item_name']}",
                 options=[f"Approve routing to {p['name']}" for p in eligible] or ["No partner has capacity — advise"],
                 urgency="high",
             )
@@ -141,6 +143,7 @@ def run_inventory_cycle() -> list:
                     f"({', '.join(p['name'] for p in eligible) or 'none'})."
                 ),
                 category="inventory",
+                reference_key=f"inventory-{item['item_name']}",
                 options=[f"Route to {p['name']}" for p in eligible] or ["No eligible partner — advise"],
                 urgency="normal",
             )
@@ -176,6 +179,7 @@ def run_donation_cycle() -> list:
                     f"gets a human look, regardless of match quality."
                 ),
                 category="donation",
+                reference_key=f"donation-offer-{offer['id']}",
                 options=_donation_options(offer),
                 urgency="high" if offer["perishable"] else "normal",
             )
@@ -194,6 +198,7 @@ def run_donation_cycle() -> list:
                 description=f"{offer['donor_name']}'s offer of {offer['item_name']} has no eligible partner "
                              f"with remaining capacity.",
                 category="donation",
+                reference_key=f"donation-offer-{offer['id']}",
                 options=["Decline the offer", "Ask a partner to make an exception this week"],
                 urgency="normal",
             )
@@ -219,6 +224,7 @@ def run_donation_cycle() -> list:
                     f"Not a clean autonomous call."
                 ),
                 category="donation",
+                reference_key=f"donation-offer-{offer['id']}",
                 options=_donation_options(offer, [top, runner_up]),
                 urgency="high" if offer["perishable"] else "normal",
             )

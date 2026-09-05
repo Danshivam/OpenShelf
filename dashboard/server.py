@@ -1,3 +1,17 @@
+"""
+OpenShelf — dashboard backend.
+
+A thin Flask API over the exact same modules the agent itself uses
+(openshelf.db / escalation / digest / tools). There is no separate
+"dashboard data model" — resolving an escalation here is the same action
+the agent's own tools would see on its next cycle, and the activity feed
+is the literal activity_log table the agent writes to.
+
+Run:
+    python dashboard/server.py
+Then open http://localhost:5050
+"""
+
 import os
 import sys
 
@@ -100,6 +114,10 @@ def api_partners():
     return jsonify(get_partner_orgs())
 
 
+# ---------------------------------------------------------------------------
+# Write / action endpoints
+# ---------------------------------------------------------------------------
+
 @app.post("/api/escalations/<int:escalation_id>/resolve")
 def api_resolve(escalation_id):
     body = request.get_json(force=True, silent=True) or {}
@@ -115,7 +133,7 @@ def api_resolve(escalation_id):
 def api_run_cycle(cycle):
     """Run a background cycle now. Prefers the real Strands agent (needs
     Bedrock credentials); falls back to the deterministic policy path
-    (goodneighbor.deterministic_cycles) if that's unavailable, so this
+    (openshelf.deterministic_cycles) if that's unavailable, so this
     button always works, but tells you honestly which engine ran."""
     if cycle not in CYCLE_FUNCS:
         return jsonify({"error": f"Unknown cycle '{cycle}'"}), 400
@@ -145,5 +163,5 @@ def api_reset_demo():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5050))
-    print(f"Good Neighbor Agent dashboard running at http://localhost:{port}")
+    print(f"OpenShelf dashboard running at http://localhost:{port}")
     app.run(host="0.0.0.0", port=port, debug=False)

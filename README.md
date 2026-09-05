@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="openshelf_assets/openshelf-logo.png" alt="OpenShelf logo" width="280">
+<img src="docs\screenshots\openshelf-logo.png" alt="OpenShelf logo" width="280">
 
 # OpenShelf
 
@@ -9,402 +9,235 @@
 *Let the agent handle the routine.*  
 *Let people handle the judgment.*
 
-<br>
-
-![Track](https://img.shields.io/badge/Track-Good%20Neighbor%20Agents-48624f?style=flat-square)
-![Built with](https://img.shields.io/badge/Built%20with-Strands%20Agents%20SDK-d0ad76?style=flat-square)
-![Deployed on](https://img.shields.io/badge/Deployed%20on-Amazon%20Bedrock%20AgentCore-b65f3c?style=flat-square)
-
 </div>
 
----
+# OpenShelf
 
-## 🌾 The Problem
+**Track:** Good Neighbor Agents — agents that help *groups* of people (neighborhoods, nonprofits, food banks, schools, libraries, small local orgs).
+**Built with:** [Strands Agents SDK](https://strandsagents.com) · **Deployed on:** Amazon Bedrock AgentCore Runtime
 
-Small community organizations — food banks, shelters, mutual aid networks, school pantries — often run on a handful of overworked coordinators.
-
-Every week, they re-solve the same problems by hand:
-
-| | Problem | The manual work |
-|---|---|---|
-| 🧑‍🤝‍🧑 | **Volunteer coverage** | “Is Saturday's shift actually covered?” — chasing volunteers over text. |
-| 📦 | **Expiring inventory** | “What's about to expire, and who can take it?” — checking spreadsheets and calling around. |
-| 🤝 | **Donation routing** | “Someone offered 200 lbs of produce — who should get it?” — making rushed judgment calls. |
-
-These problems don't need **another dashboard to babysit**.
-
-They need the routine 80% handled quietly, with a coordinator pulled in only for the 20% that genuinely requires human judgment.
+An autonomous agent that runs in the background for a small community organization — handling routine coordination quietly, and surfacing a decision to a human only when it's a genuine judgment call.
 
 ---
 
-## 🧠 What OpenShelf Does
+## The problem
 
-**OpenShelf** is an autonomous operations agent for small community organizations.
+Small community organizations — food banks, mutual aid networks, shelters — run on the same handful of overworked coordinators. Every week they re-solve the same three problems by hand:
 
-It runs in the background and watches three operational areas:
+1. **"Is Saturday's shift actually covered?"** — chasing volunteers over text.
+2. **"What's about to expire, and who can take it before it spoils?"** — checking a spreadsheet, then calling around.
+3. **"Someone just offered us 200 lbs of produce — who should get it?"** — a judgment call made under time pressure, usually by whoever picks up the phone.
 
-| Cycle | What it checks | What it handles autonomously | When it escalates |
+None of this needs a new dashboard to check. Coordinators want the routine 80% handled quietly, and to be pulled in only for the 20% that actually needs a human judgment call — a safety concern, a resource conflict, a threshold breach, or genuine ambiguity.
+
+## What this is
+
+A single autonomous agent — **OpenShelf** — that runs on a schedule in the background for a community org (demo scenario: **Riverside Community Food Bank**), watching three things:
+
+| Cycle | What it checks | What it does on its own | What it escalates |
 |---|---|---|---|
-| **Volunteer coverage** | Upcoming shifts vs. confirmed headcount | Recruits from the backup pool and confirms fills | Shift stays uncovered or no backup exists |
-| **Inventory & expiry** | Stock levels, thresholds and expiry dates | Flags reorders and routes near-expiry food to partners with capacity | Large shortfall, no safe recipient, or food-safety concern |
-| **Donation intake** | New offers vs. partner need/capacity | Confirms a clean match with one clear recipient | Competing high-need recipients, unusual donations, or safety concerns |
+| **Volunteer coverage** | Shifts in the next N days vs. confirmed headcount | Recruits from the backup volunteer pool and auto-confirms fills | A shift stays uncovered past the safe window, or no backups exist |
+| **Inventory & expiry** | Stock levels vs. thresholds, expiry dates | Logs low-stock items for reorder, routes near-expiry perishables to a partner org with capacity | Large-value shortfall, no safe recipient found, or a food-safety flag |
+| **Donation intake** | New donation offers vs. partner org need/capacity | Auto-confirms a clean match (one clear best recipient with capacity) | Competing high-need recipients, unusual/large donations, allergen or condition concerns |
 
-### The core design bet
-
-> **The agent is judged by how rarely it needs you — and how good the ask is when it does.**
-
-Everything the agent handles automatically is logged and summarized in a **weekly digest**.
-
-Everything that needs a person becomes one specific escalation:
-
-**Situation → context → 2–3 concrete options → decision**
-
-No back-and-forth. No interface to learn.
+Every autonomous action is logged and rolled into a **weekly digest**. Every escalation is a single, specific decision — a title, the situation, and 2-3 concrete options — sent to the coordinator, formatted the way an SMS reply would work ("reply with a number"). The agent won't re-escalate the same unresolved problem every cycle — it checks for an existing pending escalation on the same underlying situation first.
 
 ---
 
-# 🎬 Demo Showcase
+## Screenshots
 
-A live demo of the **Riverside Community Food Bank** dashboard, showing the agent moving from a quiet state to human escalations and finally running an operational cycle.
+**Quiet state — nothing needs a decision:**
 
-### 01 · All clear
+![Dashboard in its quiet state, showing zero pending decisions](docs/screenshots/dashboard-quiet-state.png)
 
-Nothing currently needs a coordinator. The agent is handling routine work on its own.
+**After a cycle runs and finds real decisions to make:**
 
-<p align="center">
-  <img src="openshelf_assets/demo-all-clear.png" alt="OpenShelf dashboard showing all clear state" width="900">
-</p>
+![Dashboard showing three pending escalations with numbered options](docs/screenshots/dashboard-escalations.png)
 
----
+**After a coordinator resolves one:**
 
-### 02 · One decision
+![Dashboard after resolving one escalation, showing the updated tally and activity feed](docs/screenshots/dashboard-after-resolve.png)
 
-A volunteer coverage problem crosses the autonomy boundary, so OpenShelf gives the coordinator three concrete options.
 
-<p align="center">
-  <img src="openshelf_assets/demo-one-decision.png" alt="OpenShelf dashboard showing one escalation" width="900">
-</p>
 
 ---
 
-### 03 · Multiple decisions
+## What file is what
 
-Several issues require judgment at once, while routine work continues to be handled quietly.
-
-<p align="center">
-  <img src="openshelf_assets/demo-multiple-decisions.png" alt="OpenShelf dashboard showing multiple escalations" width="900">
-</p>
-
----
-
-### 04 · Run a cycle
-
-A coordinator can trigger a cycle for the demo. In production, these cycles run unattended through Bedrock AgentCore and a scheduler.
-
-<p align="center">
-  <img src="openshelf_assets/demo-run-cycle.png" alt="OpenShelf dashboard showing the run a cycle panel" width="900">
-</p>
-
----
-
-## ⚙️ How It Works
-
-```text
-                    Scheduled cycle
-                           │
-                           ▼
-                 ┌──────────────────┐
-                 │  Strands Agent   │
-                 │  + real tools    │
-                 └────────┬─────────┘
-                          │
-                    Read real data
-                          │
-                          ▼
-                 ┌──────────────────┐
-                 │ Autonomy policy  │
-                 │ Can I safely     │
-                 │ decide this?     │
-                 └───────┬──────────┘
-                         │
-              ┌──────────┴──────────┐
-              ▼                     ▼
-       ┌──────────────┐      ┌──────────────┐
-       │ Handle       │      │ Escalate     │
-       │ automatically│      │ to human     │
-       └──────┬───────┘      └──────┬───────┘
-              └──────────┬──────────┘
-                         ▼
-                  Activity log
-                         │
-                         ▼
-                  Weekly digest
+```
+openshelf/
+├── README.md                    — this file
+├── requirements.txt              — Python dependencies
+│
+├── src/openshelf/                — the agent itself (this is the actual package)
+│   ├── config.py                  — the "autonomy contract": every threshold that decides
+│   │                                 what the agent may do alone vs. must escalate, plus
+│   │                                 which model backend to use
+│   ├── db.py                      — SQLite schema + connection helper + activity logging
+│   ├── seed_data.py               — builds the realistic one-week demo scenario
+│   ├── agent.py                   — builds the real strands.Agent: system prompt + tools
+│   │                                 + which model backend (Bedrock Converse or
+│   │                                 Bedrock-Mantle for Gemma 4) to call
+│   ├── orchestrator.py            — runs a named cycle ("volunteers"/"inventory"/
+│   │                                 "donations") against the real agent; also has a
+│   │                                 simple always-on scheduler loop for local use
+│   ├── deterministic_cycles.py    — a non-LLM implementation of the exact same policy,
+│   │                                 used by the CLI demo and as the dashboard's fallback
+│   │                                 when no Bedrock credentials are configured
+│   ├── escalation.py              — read/resolve the pending-decisions queue
+│   ├── digest.py                  — builds the weekly digest (markdown + HTML)
+│   ├── cli.py                     — `python -m openshelf.cli ...` command-line interface
+│   └── tools/                     — the actual tools the agent calls
+│       ├── volunteer_tools.py      — shift coverage, backup recruiting, notifications
+│       ├── inventory_tools.py      — inventory status, donation intake recording
+│       ├── donation_tools.py       — partner-org matching + routing
+│       └── ops_tools.py            — escalate_to_human (with dedup), notify_coordinator,
+│                                      get_current_datetime
+│
+├── dashboard/                    — the web UI shown in the screenshots above
+│   ├── server.py                  — Flask API over the *same* db/tools/escalation/digest
+│   │                                 modules the agent uses — no separate data layer
+│   └── static/
+│       ├── index.html              — page structure
+│       ├── style.css               — the matte visual design (see Design notes below)
+│       └── app.js                  — fetches from the Flask API, renders escalation
+│                                      cards, wires up the "run cycle" buttons
+│
+├── agentcore/                    — cloud deployment
+│   ├── app.py                     — BedrockAgentCoreApp entrypoint (what AWS invokes)
+│   ├── Dockerfile                  — container build (linux/arm64, required by AgentCore)
+│   └── deploy.md                   — full step-by-step AWS deployment guide
+│
+├── demo/
+│   ├── scripted_walkthrough.py     — runs the deterministic policy end-to-end and prints
+│   │                                  every decision, no AWS credentials required
+│   └── demo_transcript.md          — a captured, annotated run of the above, for judges
+│
+├── docs/screenshots/              — the images and GIF used in this README
+│
+└── tests/
+    └── test_tools.py               — pytest suite covering the tool layer and the
+                                       escalation dedup behavior, independent of any LLM
 ```
 
----
-
-## 🔌 Why Strands?
-
-OpenShelf is **not a thin prompt wrapper**.
-
-It is a real `strands.Agent` equipped with purpose-built tools backed by a real SQLite datastore containing:
-
-- volunteers
-- shifts
-- inventory
-- partner organizations
-- donation offers
-- escalations
-- activity logs
-
-The system prompt defines an explicit **autonomy contract**:
-
-- what the agent can decide alone
-- what requires human approval
-- which thresholds trigger escalation
-- how ambiguity should be handled
-
-The `escalate_to_human` tool is the **single channel** for surfacing decisions to a coordinator.
-
-The agent therefore reasons over actual tool outputs, constraints and thresholds instead of simply following a fixed script.
+**The one thing worth understanding about the architecture:** `agent.py` (real LLM) and `deterministic_cycles.py` (hand-coded fallback) implement the **same policy** against the **same tools** and the **same database**. The dashboard and CLI both prefer the real agent and only fall back to the deterministic path when Bedrock isn't reachable — and they tell you honestly which one actually ran.
 
 ---
 
-## 🏗️ Architecture
-
-```text
-                         ┌──────────────────────┐
-                         │ EventBridge Scheduler│
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │   OpenShelf Agent    │
-                         │   Strands + Bedrock  │
-                         └──────────┬───────────┘
-                                    │
-                 ┌──────────────────┼──────────────────┐
-                 ▼                  ▼                  ▼
-          Volunteer tools    Inventory tools    Donation tools
-                 └──────────────────┼──────────────────┘
-                                    ▼
-                              SQLite datastore
-                                    │
-                    ┌───────────────┴───────────────┐
-                    ▼                               ▼
-              Activity log                    Escalations
-                    │                               │
-                    ▼                               ▼
-              Weekly digest                  SNS / Slack
-```
-
----
-
-## 🛠️ Built With
-
-| Layer | Technology |
-|---|---|
-| **Agent** | Strands Agents SDK |
-| **Model runtime** | Amazon Bedrock |
-| **Deployment** | Amazon Bedrock AgentCore Runtime |
-| **Scheduling** | Amazon EventBridge Scheduler |
-| **Database** | SQLite |
-| **Backend** | Python |
-| **Dashboard** | Flask + HTML/CSS/JS |
-| **Notifications** | SNS / Slack webhook |
-
----
-
-## 📁 Project Structure
-
-```text
-src/openshelf/
-│
-├── config.py                 # Thresholds & autonomy policy
-├── db.py                     # SQLite schema + activity logging
-├── seed_data.py              # Riverside demo scenario
-├── deterministic_cycles.py   # Offline policy implementation
-│
-├── tools/
-│   ├── inventory_tools.py
-│   ├── volunteer_tools.py
-│   ├── donation_tools.py
-│   └── ops_tools.py
-│
-├── agent.py                  # Strands Agent + system prompt
-├── orchestrator.py           # Background cycles + scheduler
-├── digest.py                 # Weekly digest
-├── escalation.py             # Escalation queue
-└── cli.py                    # Operations CLI
-
-agentcore/
-├── app.py
-├── Dockerfile
-└── deploy.md
-
-dashboard/
-├── server.py
-└── static/
-    ├── index.html
-    ├── style.css
-    └── app.js
-
-demo/
-├── scripted_walkthrough.py
-└── demo_transcript.md
-
-tests/
-└── test_tools.py
-```
-
----
-
-## ▶️ Quick Start
-
-### 1. Install dependencies
+## Setup
 
 ```bash
+git clone <this repo>
+cd openshelf
 pip install -r requirements.txt
 ```
 
-### 2. Build the demo world
+Build the demo database:
 
 ```bash
-python -m goodneighbor.cli init-db
-python -m goodneighbor.cli seed
+# Windows PowerShell
+$env:PYTHONPATH = "src"
+python -m openshelf.cli init-db
+python -m openshelf.cli seed
+
+# macOS/Linux
+export PYTHONPATH=src
+python -m openshelf.cli init-db
+python -m openshelf.cli seed
 ```
 
-### 3. Run the offline walkthrough
+---
 
-No AWS credentials required:
-
-```bash
-python demo/scripted_walkthrough.py
-```
-
-### 4. Start the dashboard
+## How to start the dashboard server
 
 ```bash
 python dashboard/server.py
 ```
 
-Then open:
+(`dashboard/server.py` already adds `src` to its own path, so you don't need `PYTHONPATH` set just for this.)
 
-```text
-http://localhost:5050
-```
+Then open **http://localhost:5050** in your browser. You'll see the quiet-state view first (matches the first screenshot above) until you either wait for the demo data's built-in gaps to matter, or trigger a cycle yourself from the **"Run a cycle now"** panel at the bottom of the page.
 
-### 5. Run a real agentic cycle
+Every button click hits the real Flask API — resolving an escalation, resetting demo data, and running a cycle all write to the same SQLite database the CLI uses.
 
-Requires AWS credentials with Bedrock access:
+---
+
+## How to run the live LLM agent
+
+The dashboard and CLI will always *try* the real agent first. To make that succeed instead of silently falling back to the deterministic path, you need AWS credentials with Bedrock access configured.
+
+### 1. Configure AWS credentials (one-time)
 
 ```bash
-export AWS_REGION=us-east-1
-
-python -m goodneighbor.cli run-cycle all
+aws configure
 ```
+Enter your Access Key ID, Secret Access Key, region (e.g. `us-east-1`), and output format (`json`). Get the keys from **IAM → Users → your user → Security credentials → Create access key** in the AWS Console — create a dedicated IAM user with `AmazonBedrockFullAccess` rather than using root account keys.
 
-### 6. Inspect escalations
-
+Verify it worked:
 ```bash
-python -m goodneighbor.cli show-escalations
+aws sts get-caller-identity
 ```
 
-### 7. Generate the weekly digest
+### 2. Choose your model backend
 
+OpenShelf supports two ways of reaching a Bedrock-hosted model, controlled by env vars in `config.py`:
+
+**Standard Bedrock Converse API** (Claude, Llama 3.x/4, Mistral, Cohere, Gemma 3):
 ```bash
-python -m goodneighbor.cli digest
+$env:OPENSHELF_MODEL_PROVIDER = "bedrock"
+$env:OPENSHELF_MODEL_ID = "us.meta.llama4-scout-17b-instruct-v1:0"   # example
+$env:AWS_REGION = "us-east-1"
 ```
 
----
+**Bedrock-Mantle** (Gemma 4 family only — E2B, 26B-A4B, 31B — served via a separate OpenAI-compatible endpoint):
+```bash
+$env:OPENSHELF_MODEL_PROVIDER = "bedrock-mantle"
+$env:OPENSHELF_MODEL_ID = "google.gemma-4-31b"   # this is the current default in config.py
+$env:AWS_REGION = "us-east-1"
+```
+(macOS/Linux: use `export VAR=value` instead of `$env:VAR = "value"`.)
 
-## ☁️ Deploying to Bedrock AgentCore
+If you don't set these at all, `config.py`'s defaults already point at `bedrock-mantle` + `google.gemma-4-31b`.
 
-OpenShelf is designed to run **without someone opening the app**.
+### 3. Run it
 
-`agentcore/app.py` wraps the same OpenShelf agent in a `BedrockAgentCoreApp`, containerized through `agentcore/Dockerfile`.
+**From the CLI**, so you can read the actual tool-call sequence:
+```bash
+python -m openshelf.cli run-cycle volunteers
+```
+A working run prints each tool call the model made (`get_current_datetime`, `get_shift_coverage`, `find_available_backup_volunteers`, `escalate_to_human`, etc.) followed by a plain-language summary — this is the real model reasoning through your tools, not a script.
 
-In production:
-
-```text
-EventBridge Scheduler
-        │
-        ├── Volunteer coverage
-        ├── Inventory & expiry
-        └── Donation intake
-                    │
-                    ▼
-          Bedrock AgentCore
-                    │
-                    ▼
-              OpenShelf
-                    │
-          ┌─────────┴─────────┐
-          ▼                   ▼
-   Handle quietly       Escalate clearly
-                              │
-                              ▼
-                         Coordinator
+Check what it actually did (don't just trust the summary text):
+```bash
+python -m openshelf.cli show-escalations
 ```
 
-Escalations are pushed through **SNS / Slack webhook** — the main time the organization hears from the agent unprompted.
+**From the dashboard**, click any button under "Run a cycle now" — the response box that appears shows a badge:
+- 🟢 **"Live LLM agent"** — the real model ran successfully (this is what's shown in the third screenshot above)
+- 🟡 **"Deterministic policy path (no Bedrock credentials found)"** — the fallback ran instead, and the badge text includes the actual Python exception name so you know what to fix (missing credentials, wrong region, model not enabled, etc.)
 
-See `agentcore/deploy.md` for deployment instructions.
+### 4. Reset between test runs
 
----
-
-## 📊 Why It Matters
-
-| Today | With OpenShelf |
-|---|---|
-| Volunteers chased manually | Backup pool recruited automatically |
-| Food checked manually | Expiry risks detected continuously |
-| Donations routed under pressure | Clear matches handled automatically |
-| Coordinators monitor dashboards | Agent works in the background |
-| Every problem reaches a person | Only genuine judgment calls do |
-
-### The goal
-
-**↓ uncovered shifts**  
-**↓ wasted food**  
-**↓ routing delays**  
-**↓ coordinator workload**
-
-OpenShelf doesn't replace the people running these organizations.
-
-It gives them more time to do the work **only people can do**.
+Since escalations persist until resolved, reset to a clean slate before re-testing:
+```bash
+python -m openshelf.cli init-db
+python -m openshelf.cli seed
+```
+or, from the dashboard, click **"Reset demo data."**
 
 ---
 
-## What all is it :-
+## Deploying to Bedrock AgentCore
 
-### Technological implementation
-
-- Real `strands.Agent`
-- 13 purpose-built tools
-- SQLite relational datastore
-- Explicit autonomy and escalation policy
-- AgentCore Runtime entrypoint
-- Scheduled background execution
-- Deterministic offline demo path
-- Shared logic between agent, CLI and dashboard
-
-### Design
-
-- Background-first instead of dashboard-first
-- Weekly digest instead of constant notifications
-- Single, specific human escalations
-- Dashboard centered around **Needs your call**
-- SMS-style decision format
-- Matte olive / clay / mustard / brick visual language
-
-### Potential impact
-
-OpenShelf targets measurable operational failures:
-
-**↓ uncovered shifts** · **↓ food waste** · **↓ routing delays** · **↓ coordinator workload**
+See **`agentcore/deploy.md`** for the full walkthrough: building the container, pushing to ECR, launching the AgentCore Runtime, and wiring up EventBridge Scheduler rules so the three cycles run unattended on a real schedule instead of needing anyone to trigger them.
 
 ---
+
+## Accomplishments
+
+- **Technological implementation** — a real `strands.Agent` with 13 purpose-built tools over a real relational datastore, explicit autonomy/escalation policy (including duplicate-escalation prevention) in the system prompt, support for multiple model backends (standard Bedrock Converse and Bedrock-Mantle for Gemma 4), a working AgentCore Runtime entrypoint, and a deterministic tool-logic path that proves the mechanics without any AWS dependency.
+- **Design** — the product is designed around *not* being opened: scheduled background cycles, a once-a-week digest, and single, specific escalations instead of a chat UI to manage. The dashboard exists as a presentable window into that system, built around making the "needs your call" queue the dominant, unmissable element.
+- **Potential impact** — targets a named, common failure mode (volunteer no-shows, spoiled donations, mismatched donation routing) for a concrete audience (food banks / mutual aid orgs) with a measurable output: fewer uncovered shifts, less wasted food, faster donation routing, and a bounded number of decisions actually asked of a human.
 
 <div align="center">
 

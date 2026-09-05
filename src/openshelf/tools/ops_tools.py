@@ -29,6 +29,7 @@ def escalate_to_human(
     description: str,
     category: str,
     options: list,
+    reference_key: str,
     urgency: str = "normal",
 ) -> str:
     """Raise a decision to a human coordinator instead of deciding autonomously.
@@ -38,6 +39,11 @@ def escalate_to_human(
     defined by policy, or real ambiguity where no option is clearly correct.
     Do not use this for routine actions you are authorized to take yourself —
     take the action and log it instead.
+
+    If a pending escalation already exists for the same reference_key, this
+    tool will NOT create a duplicate — it returns the existing escalation's
+    id instead. This is what keeps a still-unresolved problem from paging the
+    coordinator again every time this cycle runs before they've dealt with it.
 
     Args:
         title: A short, specific summary a coordinator can read at a glance
@@ -50,18 +56,38 @@ def escalate_to_human(
             (e.g. ["Approve routing 40 lbs peppers to Riverside Fridge",
             "Split 20/20 between Fridge and Elmwood Shelter",
             "Decline and notify donor pickup isn't possible"]).
+        reference_key: A STABLE identifier for the underlying situation, not
+            the wording of the problem — derive it from the id/name you
+            already have from your other tool calls, e.g. "shift-3",
+            "donation-offer-2", or "inventory-Whole milk". Reuse the exact
+            same reference_key every time you'd otherwise re-escalate the
+            same unresolved situation, so this tool can recognize it's
+            already pending and skip the duplicate.
         urgency: One of "low", "normal", "high". Use "high" only when a
             decision is needed within hours (e.g. same-day perishable pickup
             or a shift starting within the escalation window).
 
     Returns:
-        Confirmation including the escalation id.
+        Confirmation including the escalation id — either newly created, or
+        the existing pending one if this reference_key was already raised.
     """
     with get_conn() as conn:
+        existing = conn.execute(
+            "SELECT id FROM escalations WHERE status = 'pending' "
+            "AND category = ? AND reference_key = ?",
+            (category, reference_key),
+        ).fetchone()
+        if existing:
+            return (
+                f"Escalation #{existing['id']} for '{reference_key}' is already pending "
+                f"and unresolved — not creating a duplicate. Wait for it to be resolved "
+                f"before taking further action on this situation."
+            )
+
         cur = conn.execute(
-            "INSERT INTO escalations (category, title, description, options_json, urgency) "
-            "VALUES (?, ?, ?, ?, ?)",
-            (category, title, description, json.dumps(options), urgency),
+            "INSERT INTO escalations (category, reference_key, title, description, options_json, urgency) "
+            "VALUES (?, ?, ?, ?, ?, ?)",
+            (category, reference_key, title, description, json.dumps(options), urgency),
         )
         escalation_id = cur.lastrowid
     log_activity(

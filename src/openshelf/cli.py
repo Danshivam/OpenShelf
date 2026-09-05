@@ -80,7 +80,7 @@ def cmd_serve(_args):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(prog="goodneighbor")
+    parser = argparse.ArgumentParser(prog="openshelf")
     sub = parser.add_subparsers(dest="command", required=True)
 
     sub.add_parser("init-db").set_defaults(func=cmd_init_db)

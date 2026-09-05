@@ -11,14 +11,26 @@ import os
 
 # --- Identity -----------------------------------------------------------
 
-ORG_NAME = os.environ.get("GNA_ORG_NAME", "Riverside Community Food Bank")
-DB_PATH = os.environ.get("GNA_DB_PATH", os.path.join(os.path.dirname(__file__), "..", "..", "goodneighbor.db"))
+ORG_NAME = os.environ.get("OPENSHELF_ORG_NAME", "Riverside Community Food Bank")
+DB_PATH = os.environ.get("OPENSHELF_DB_PATH", os.path.join(os.path.dirname(__file__), "..", "..", "openshelf.db"))
 
 # --- Model ----------------------------------------------------------------
+#
+# Two model backends are supported, selected by OPENSHELF_MODEL_PROVIDER:
+#
+#   "bedrock" (default) — any model reachable through the standard Bedrock
+#       Runtime Converse API: Anthropic Claude, Meta Llama 3.x/4, Mistral,
+#       Cohere, Gemma 3, etc. Set OPENSHELF_MODEL_ID to the model id or
+#       cross-region inference profile id (e.g. "us.meta.llama4-scout-17b-instruct-v1:0").
+#
+#   "bedrock-mantle" — Google's Gemma 4 family (E2B, 26B-A4B, 31B), which
+#       Bedrock serves only through a separate OpenAI-compatible endpoint
+#       ("bedrock-mantle"), not the standard Converse API. Set OPENSHELF_MODEL_ID
+#       to e.g. "google.gemma-4-31b". Auth still uses your normal AWS
+#       credentials — Strands generates a bearer token from them automatically.
 
-# Any Bedrock-hosted model id the deploying org has access to.
-MODEL_PROVIDER = os.environ.get("GNA_MODEL_PROVIDER", "bedrock-mantle")  # "bedrock" | "bedrock-mantle"
-BEDROCK_MODEL_ID = os.environ.get("GNA_MODEL_ID", "google.gemma-4-31b")
+MODEL_PROVIDER = os.environ.get("OPENSHELF_MODEL_PROVIDER", "bedrock-mantle")  # "bedrock" | "bedrock-mantle"
+BEDROCK_MODEL_ID = os.environ.get("OPENSHELF_MODEL_ID", "google.gemma-4-31b")
 BEDROCK_REGION = os.environ.get("AWS_REGION", "us-east-1")
 
 # --- Autonomy policy: volunteer coverage ----------------------------------
