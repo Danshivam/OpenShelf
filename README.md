@@ -128,7 +128,7 @@ openshelf/
 
 ```bash
 git clone <this repo>
-cd openshelf
+cd src
 pip install -r requirements.txt
 ```
 
