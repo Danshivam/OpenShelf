@@ -2,7 +2,7 @@
 
 <img src="docs\screenshots\openshelf-logo.png" alt="OpenShelf logo" width="280">
 
-# OpenShelf
+# OpenShelf!
 
 ### **Less coordination. Less waste. More help.**
 
