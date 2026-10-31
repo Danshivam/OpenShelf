@@ -25,7 +25,7 @@ from bedrock_agentcore import BedrockAgentCoreApp  # noqa: E402
 
 from openshelf.orchestrator import run_cycle, run_all_cycles  # noqa: E402
 from openshelf.escalation import resolve_escalation, list_pending_escalations  # noqa: E402
-from openshelf.digest import build_digest, render_markdown  # noqa: E402
+openshelf.digest import build_digest, render_markdown  # noqa: E402
 from openshelf.agent import build_agent  # noqa: E402
 from openshelf.db import init_db  # noqa: E402
 
@@ -42,7 +42,7 @@ def invoke(payload: dict) -> dict:
     body AgentCore forwards from InvokeAgentRuntime."""
     mode = payload.get("mode", "prompt")
 
-    if mode == "cycle":
+    if moe == "cycle":
         cycle = payload.get("cycle", "all")
         if cycle == "all":
             summaries = run_all_cycles()
@@ -51,7 +51,7 @@ def invoke(payload: dict) -> dict:
         return {"mode": "cycle", "results": summaries}
 
     if mode == "resolve_escalation":
-        result = resolve_escalation(
+        reslt = resolve_escalation(
             escalation_id=payload["escalation_id"],
             resolution=payload["resolution"],
             resolved_by=payload.get("resolved_by", "coordinator"),
@@ -59,7 +59,7 @@ def invoke(payload: dict) -> dict:
         return {"mode": "resolve_escalation", "result": result}
 
     if mode == "digest":
-        digest = build_digest(period_days=payload.get("days", 7))
+        digest = build_digest(period_dys=payload.get("days", 7))
         return {"mode": "digest", "markdown": render_markdown(digest), "digest": digest}
 
     if mode == "list_escalations":
